@@ -1,0 +1,5 @@
+<root xmlns="wnd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="wnd wnd.xsd">
+<LDB ID="91" Title="L3" Category="3"/>
+<LDB ID="92" Title="L4" Category="3"/>
+<LDB NEW_ATTRIBUTE="I'am new attribute" ID="93" Title="L5" Category="3"/>
+</root>

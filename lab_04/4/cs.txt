@@ -1,0 +1,23 @@
+using System;
+using System.Data;
+using System.Data.SqlClient;
+using System.Data.SqlTypes;
+using Microsoft.SqlServer.Server;
+
+public partial class fourth
+{
+    [Microsoft.SqlServer.Server.SqlProcedure]
+    public static void updateStudio(int type)
+    {
+        using (SqlConnection connection = new SqlConnection("context connection=true"))
+        {
+            connection.Open();
+            SqlCommand command = new SqlCommand("update Lectures set Cno = @type where Lectures.Lname like '%Ltd%'", connection);
+
+            command.Parameters.AddWithValue("@type", type);
+
+            SqlDataReader r = command.ExecuteReader();
+            SqlContext.Pipe.Send(r);
+        }
+    }
+}

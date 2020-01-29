@@ -1,0 +1,64 @@
+using System;
+using System.Collections;
+using System.Data;
+using System.Data.SqlClient;
+using System.Data.SqlTypes;
+using Microsoft.SqlServer.Server;
+
+public partial class UserDefinedFunctions
+{
+    private class TitleInfo
+    {
+        public SqlString Lname;
+
+
+        public TitleInfo(SqlString name)
+        {
+            Lname = name;
+        }
+    }
+
+    [SqlFunction(
+        DataAccess = DataAccessKind.Read,
+        FillRowMethodName = "fill",
+        TableDefinition = "name nvarchar(60)")]
+    public static IEnumerable SomeResult()
+    {
+        ArrayList arraylist = new ArrayList();
+
+        using (SqlConnection connection = new SqlConnection("context connection=true"))
+        {
+            connection.Open();
+
+            using (SqlCommand sqlTitle = new SqlCommand(
+                "SELECT " +
+                "Lname " +
+                "FROM Lectures " +
+                "where Lectures.Lname like '%Ltd%'",
+                connection))
+            {
+                
+
+                using (SqlDataReader Reader = sqlTitle.ExecuteReader())
+                {
+                    while (Reader.Read())
+                    {
+                        arraylist.Add(new TitleInfo(Reader.GetSqlString(0)
+                            ));
+                    }
+                }
+            }
+        }
+
+        return arraylist;
+    }
+
+
+    public static void fill(
+    object obj,
+    out SqlString name)
+    {
+        TitleInfo tinfo = (TitleInfo)obj;
+        name = tinfo.Lname;
+    }
+}

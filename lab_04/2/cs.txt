@@ -1,0 +1,49 @@
+using System;
+using System.Data;
+using System.Data.SqlClient;
+using System.Data.SqlTypes;
+using Microsoft.SqlServer.Server;
+
+[Serializable]
+[Microsoft.SqlServer.Server.SqlUserDefinedAggregate(Format.Native)]
+public struct GetMoney
+{
+    private double all_price;
+
+    public void Init()
+    {
+        int places = 0;
+        double price = 0;
+        double all_price = 0;
+    }
+
+    public void Accumulate(int places, double price)
+    {
+        if (places > 100)
+        {
+            all_price = places * price;
+        }
+    }
+
+    public void Merge(GetMoney Group)
+    {
+        // Введите здесь код
+    }
+
+    public SqlString Terminate()
+    {
+        if (all_price > 200000)
+        {
+            return new SqlString("Большая прибыль");
+        }
+        else
+        {
+            return new SqlString("Маленькая прибыль");
+        }
+    }
+
+    // Это поле элемента-заполнителя
+    //private int places = 0;
+    //private double price = 0;
+    //private double all_price = 0;
+}

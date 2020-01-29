@@ -1,0 +1,7 @@
+<!ELEMENT Lectures L*))>
+<!ELEMENT L>
+
+<!ATTLIST L
+	Title (#PCDATA)
+	Variety(#PCDATA)
+	Prive (#PCDATA)>

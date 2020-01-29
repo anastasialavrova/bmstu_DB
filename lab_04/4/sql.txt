@@ -1,0 +1,72 @@
+use LecturesDB
+go
+
+sp_configure 'show advanced options', 1
+go
+
+reconfigure
+
+sp_configure 'clr enabled', 1
+go
+
+alter database LecturesDB set trustworthy on
+
+drop assembly CLR3
+
+create assembly CLR authorization dbo
+from 'C:\Users\User\Documents\Visual Studio 2017\Projects\Database2\Database2\obj\Debug\Database2.dll'
+with permission_set = unsafe
+
+create assembly CLR2 authorization dbo
+from 'C:\Users\User\Documents\Visual Studio 2017\Projects\Database3\Database3\obj\Debug\Database3.dll'
+with permission_set = unsafe
+
+create assembly CLR3 authorization dbo
+from 'C:\Users\User\Documents\Visual Studio 2017\Projects\Database4\Database4\obj\Debug\Database4.dll'
+with permission_set = unsafe
+
+create assembly CLR4 authorization dbo
+from 'C:\Users\User\Documents\Visual Studio 2017\Projects\Database5\Database5\obj\Debug\Database5.dll'
+with permission_set = unsafe
+
+CREATE FUNCTION GetRandomNumber(@min int, @max int)
+RETURNS int
+AS
+EXTERNAL NAME CLR.[HandWrittenUDF.RandomRange].GetRandomFromGap
+GO
+
+SELECT dbo.GetRandomNumber(1,20) AS Random
+GO
+
+CREATE AGGREGATE getPopularStatus (@seats int, @price float) RETURNS nvarchar(50)  
+EXTERNAL NAME CLR2.GetMoney;  
+go  
+
+
+select dbo.getPopularStatus(Lectures.Seats, LDB.Price) as 'Most popular' from LDB join Lectures on LDB.Lno = Lectures.Lno
+go
+
+
+drop function someResult
+
+
+CREATE FUNCTION someResult()   
+RETURNS TABLE (  
+   name nvarchar(60)
+)  
+AS EXTERNAL NAME CLR3.UserDefinedFunctions.SomeResult
+go  
+
+SELECT * FROM SomeResult();  
+go 
+
+
+create procedure updateLectures
+	@type int
+as external name CLR4.fourth.updateStudio;
+go
+
+exec updateLectures 3;
+go
+
+select * from Lectures
